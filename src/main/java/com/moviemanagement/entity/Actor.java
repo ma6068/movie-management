@@ -2,6 +2,7 @@ package com.moviemanagement.entity;
 
 import com.moviemanagement.enums.Gender;
 import jakarta.persistence.*;
+
 import java.util.Date;
 import java.util.List;
 
@@ -39,11 +40,12 @@ public class Actor {
     public Actor() {
     }
 
-    public Actor(String firstName, String lastName, Gender gender, Date bornDate) {
+    public Actor(String firstName, String lastName, Gender gender, Date bornDate, List<Movie> movies) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.bornDate = bornDate;
+        this.movies = movies;
     }
 
     // Getters and setters

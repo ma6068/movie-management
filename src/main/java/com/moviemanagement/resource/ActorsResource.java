@@ -1,9 +1,8 @@
 package com.moviemanagement.resource;
 
-import com.moviemanagement.dto.ActorDto;
-import com.moviemanagement.entity.Actor;
-import com.moviemanagement.repository.ActorsRepository;
+import com.moviemanagement.dto.CreateUpdateActorDto;
 import com.moviemanagement.response.BasicResponse;
+import com.moviemanagement.services.ActorService;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -11,7 +10,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.List;
 
 @Path("/actors")
 @Produces(MediaType.APPLICATION_JSON)
@@ -21,7 +19,7 @@ public class ActorsResource {
     private static final Logger logger = LoggerFactory.getLogger(ActorsResource.class);
 
     @Inject
-    ActorsRepository actorsRepository;
+    ActorService actorService;
 
     // List all actors
     @GET
@@ -29,7 +27,7 @@ public class ActorsResource {
     public Response listAll() {
         try {
             logger.info("Fetching all actors");
-            List<Actor> actors = actorsRepository.findAll();
+            var actors = actorService.listAllActors();
             return Response.ok(actors).build();
         } catch (Exception e) {
             logger.error("Error fetching actors", e);
@@ -45,7 +43,7 @@ public class ActorsResource {
     public Response listActors(@PathParam("page") int page, @PathParam("size") int size) {
         try {
             logger.info("Fetching actors with pagination page: {}, size: {}", page, size);
-            List<Actor> actors = actorsRepository.findAll(page, size);
+            var actors = actorService.listActorsWithPagination(page, size);
             return Response.ok(actors).build();
         } catch (Exception e) {
             logger.error("Error fetching paginated actors", e);
@@ -58,12 +56,12 @@ public class ActorsResource {
     // Create a new actor
     @POST
     @Path("/create")
-    public Response create(@Valid ActorDto actorDto) {
+    public Response create(@Valid CreateUpdateActorDto createActorDto) {
         try {
-            logger.info("Creating a new actor: {}", actorDto.getFirstName() + " " + actorDto.getLastName());
-            actorsRepository.create(convertToEntity(actorDto));
+            logger.info("Creating a new actor: {}", createActorDto.getFirstName() + " " + createActorDto.getLastName());
+            var response = actorService.createActor(createActorDto);
             return Response.status(Response.Status.CREATED)
-                    .entity(new BasicResponse(true, "Actor created successfully"))
+                    .entity(new BasicResponse(response.isSuccess(), response.getMessage()))
                     .build();
         } catch (Exception e) {
             logger.error("Error creating actor", e);
@@ -76,21 +74,11 @@ public class ActorsResource {
     // Update an existing actor
     @PUT
     @Path("/update/{actorId}")
-    public Response update(@PathParam("actorId") Long actorId, @Valid ActorDto actorDto) {
+    public Response update(@PathParam("actorId") Long actorId, @Valid CreateUpdateActorDto updateActorDto) {
         try {
             logger.info("Updating actor with ID: {}", actorId);
-
-            // check if actor exists
-            var actor = actorsRepository.findById(actorId);
-            if (actor == null) {
-                return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new BasicResponse(false, "Actor with that ID does not exist"))
-                    .build();
-            }
-
-            // update actor
-            actorsRepository.update(convertToEntity(actor, actorDto));
-            return Response.ok(new BasicResponse(true, "Actor updated successfully")).build();
+            var response = actorService.updateActor(updateActorDto);
+            return Response.ok(new BasicResponse(response.isSuccess(), response.getMessage())).build();
         } catch (Exception e) {
             logger.error("Error updating actor", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -105,18 +93,8 @@ public class ActorsResource {
     public Response delete(@PathParam("id") Long id) {
         try {
             logger.info("Deleting actor with ID: {}", id);
-
-            // check if actor exists
-            var actor = actorsRepository.findById(id);
-            if (actor == null) {
-                return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new BasicResponse(false, "Actor with that ID does not exist"))
-                    .build();
-            }
-
-            // delete actor
-            actorsRepository.delete(id);
-            return Response.ok(new BasicResponse(true, "Actor deleted successfully")).build();
+            var response = actorService.deleteActor(id);
+            return Response.ok(new BasicResponse(response.isSuccess(), response.getMessage())).build();
         } catch (Exception e) {
             logger.error("Error deleting actor", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -131,12 +109,7 @@ public class ActorsResource {
     public Response findById(@PathParam("id") Long id) {
         try {
             logger.info("Fetching actor with ID: {}", id);
-            var actor = actorsRepository.findById(id);
-            if (actor == null) {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity(new BasicResponse(false, "Actor not found"))
-                        .build();
-            }
+            var actor = actorService.findActorById(id);
             return Response.ok(actor).build();
         } catch (Exception e) {
             logger.error("Error fetching actor", e);
@@ -144,17 +117,5 @@ public class ActorsResource {
                     .entity(new BasicResponse(false, e.getMessage()))
                     .build();
         }
-    }
-
-    private Actor convertToEntity(ActorDto dto) {
-        return new Actor(dto.getFirstName(), dto.getLastName(), dto.getGender(), dto.getBornDate());
-    }
-
-    private Actor convertToEntity(Actor actor, ActorDto dto) {
-        actor.setFirstName(dto.getFirstName());
-        actor.setLastName(dto.getLastName());
-        actor.setGender(dto.getGender());
-        actor.setBornDate(dto.getBornDate());
-        return actor;
     }
 }

@@ -1,7 +1,5 @@
 package com.moviemanagement.dto;
 
-import com.moviemanagement.entity.Actor;
-import com.moviemanagement.entity.Movie;
 import com.moviemanagement.enums.Genre;
 import java.util.List;
 

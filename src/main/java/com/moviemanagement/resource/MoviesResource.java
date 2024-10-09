@@ -2,7 +2,6 @@ package com.moviemanagement.resource;
 
 import com.moviemanagement.dto.CreateMovieDto;
 import com.moviemanagement.dto.UpdateMovieDto;
-import com.moviemanagement.mapper.MovieMapper;
 import com.moviemanagement.response.BasicResponse;
 import com.moviemanagement.services.MovieService;
 import jakarta.inject.Inject;
@@ -34,8 +33,8 @@ public class MoviesResource {
         } catch (Exception e) {
             logger.error("Error fetching movies", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new BasicResponse(false, e.getMessage()))
-                    .build();
+                .entity(new BasicResponse(false, e.getMessage()))
+                .build();
         }
     }
 
@@ -50,8 +49,8 @@ public class MoviesResource {
         } catch (Exception e) {
             logger.error("Error fetching paginated movies", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new BasicResponse(false, e.getMessage()))
-                    .build();
+                .entity(new BasicResponse(false, e.getMessage()))
+                .build();
         }
     }
 
@@ -66,8 +65,8 @@ public class MoviesResource {
         } catch (Exception e) {
             logger.error("Error searching for movies", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new BasicResponse(false, e.getMessage()))
-                    .build();
+                .entity(new BasicResponse(false, e.getMessage()))
+                .build();
         }
     }
 
@@ -100,8 +99,8 @@ public class MoviesResource {
         } catch (Exception e) {
             logger.error("Error updating movie", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new BasicResponse(false, e.getMessage()))
-                    .build();
+                .entity(new BasicResponse(false, e.getMessage()))
+                .build();
         }
     }
 
@@ -132,8 +131,8 @@ public class MoviesResource {
         } catch (Exception e) {
             logger.error("Error fetching movie", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new BasicResponse(false, e.getMessage()))
-                    .build();
+                .entity(new BasicResponse(false, e.getMessage()))
+                .build();
         }
     }
 }

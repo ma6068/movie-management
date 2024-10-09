@@ -1,44 +1,41 @@
 package com.moviemanagement.dto;
 
 import com.moviemanagement.enums.Gender;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.*;
 
 import java.util.Date;
+import java.util.List;
 
 public class ActorDto {
-    @NotNull(message = "First name cannot be null")
-    @NotBlank(message = "First name cannot be blank")
-    @Size(max = 255, message = "First name must be less than or equal to 255 characters")
+
+    private Long id;
     private String firstName;
-
-    @NotNull(message = "Last name cannot be null")
-    @NotBlank(message = "Last name cannot be blank")
-    @Size(max = 255, message = "Last name must be less than or equal to 255 characters")
     private String lastName;
-
-    @Enumerated(EnumType.STRING)
     private Gender gender;
-
-    @Past(message = "Born date must be a past date")
-    @Temporal(TemporalType.DATE)
     private Date bornDate;
+    private List<MovieDto> movies;
 
     // Constructors
     public ActorDto() {
     }
 
-    public ActorDto(String firstName, String lastName, Gender gender, Date bornDate) {
+    public ActorDto(Long id, String firstName, String lastName, Gender gender, Date bornDate, List<MovieDto> movies) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.bornDate = bornDate;
+        this.movies = movies;
     }
 
     // Getters and setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -69,5 +66,13 @@ public class ActorDto {
 
     public void setBornDate(Date bornDate) {
         this.bornDate = bornDate;
+    }
+
+    public List<MovieDto> getMovies() {
+        return movies;
+    }
+
+    public void setMovies(List<MovieDto> movies) {
+        this.movies = movies;
     }
 }
