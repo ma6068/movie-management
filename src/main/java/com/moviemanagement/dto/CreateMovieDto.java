@@ -1,50 +1,46 @@
-package com.moviemanagement.entity;
+package com.moviemanagement.dto;
 
 import com.moviemanagement.enums.Genre;
-import jakarta.persistence.*;
+import com.moviemanagement.validation.UniqueImdbID;
+import jakarta.validation.constraints.*;
+
 import java.util.List;
 
-@Entity
-@Table(name = "movies")
-public class Movie {
-
-    @Id
-    @Column(name = "imdb_id", nullable = false, unique = true)
+public class CreateMovieDto {
+    @UniqueImdbID
+    @NotNull(message = "IMDb ID cannot be null")
+    @NotBlank(message = "IMDb ID cannot be blank")
+    @Size(min = 7, max = 50, message = "IMDb ID must be between 7 and 50 characters")
     private String imdbID;
 
-    @Column(name = "title", nullable = false)
+    @NotNull(message = "Title cannot be null")
+    @NotBlank(message = "Title cannot be blank")
+    @Size(max = 255, message = "Title must be less than or equal to 255 characters")
     private String title;
 
-    @Column(name = "year_created")
+    @Min(value = 1888, message = "Year must be no earlier than 1888")
+    @Max(value = 2024, message = "Year must be no later than 2024")
     private int yearCreated;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "genre")
+    //@NotNull(message = "Genre cannot be null")
     private Genre genre;
 
-    @Column(name = "description")
+    @Size(max = 5000, message = "Description must be less than or equal to 5000 characters") // Assuming TEXT type in DB can hold up to 5000 chars
     private String description;
 
-    @ElementCollection
-    @CollectionTable(name = "movie_pictures", joinColumns = @JoinColumn(name = "movie_id"))
-    @Column(name = "picture_url")
-    private List<String> pictures;
-
-    @ManyToMany(mappedBy = "movies")
-    private List<Actor> actors;
+    @NotEmpty(message = "At least one picture URL must be provided")
+    private List<@NotBlank(message = "Picture URL cannot be blank") @Size(max = 255, message = "Picture URL must be less than or equal to 255 characters") String> pictures;
 
     // Constructors
-    public Movie() {
-    }
+    public CreateMovieDto() {}
 
-    public Movie(String imdbID, String title, int yearCreated, Genre genre, String description, List<String> pictures, List<Actor> actors) {
+    public CreateMovieDto(String imdbID, String title, int yearCreated, Genre genre, String description, List<String> pictures) {
         this.imdbID = imdbID;
         this.title = title;
         this.yearCreated = yearCreated;
         this.genre = genre;
         this.description = description;
         this.pictures = pictures;
-        this.actors = actors;
     }
 
     // Getters and setters
@@ -94,13 +90,5 @@ public class Movie {
 
     public void setPictures(List<String> pictures) {
         this.pictures = pictures;
-    }
-
-    public List<Actor> getActors() {
-        return actors;
-    }
-
-    public void setActors(List<Actor> actors) {
-        this.actors = actors;
     }
 }
