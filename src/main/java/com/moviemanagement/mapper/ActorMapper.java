@@ -2,6 +2,7 @@ package com.moviemanagement.mapper;
 
 import com.moviemanagement.dto.ActorDto;
 import com.moviemanagement.dto.CreateUpdateActorDto;
+import com.moviemanagement.dto.MovieDto;
 import com.moviemanagement.entity.Actor;
 import com.moviemanagement.entity.Movie;
 import java.util.List;
@@ -14,7 +15,13 @@ public class ActorMapper {
         if (actor == null) {
             return null; // Handle null case
         }
-        return new ActorDto(actor.getId(), actor.getFirstName(), actor.getLastName(), actor.getGender(), actor.getBornDate(), null);
+
+        List<MovieDto> movieDtos = actor.getMovies().stream()
+            .map(movie -> new MovieDto(movie.getImdbID(), movie.getTitle(), movie.getYearCreated(), movie.getGenre(),
+                    movie.getDescription(), movie.getPictures(), null))
+            .toList();
+
+        return new ActorDto(actor.getId(), actor.getFirstName(), actor.getLastName(), actor.getGender(), actor.getBornDate(), movieDtos);
     }
 
     // Create list of Actor dtos from list of Actor entities
