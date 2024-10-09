@@ -1,45 +1,31 @@
 package com.moviemanagement.dto;
 
+import com.moviemanagement.entity.Actor;
+import com.moviemanagement.entity.Movie;
 import com.moviemanagement.enums.Genre;
-import jakarta.validation.constraints.*;
-
 import java.util.List;
 
-public class UpdateMovieDto {
-    @NotNull(message = "IMDb ID cannot be null")
-    @NotBlank(message = "IMDb ID cannot be blank")
-    @Size(min = 7, max = 50, message = "IMDb ID must be between 7 and 50 characters")
+public class MovieDto {
+
     private String imdbID;
-
-    @NotNull(message = "Title cannot be null")
-    @NotBlank(message = "Title cannot be blank")
-    @Size(max = 255, message = "Title must be less than or equal to 255 characters")
     private String title;
-
-    @Min(value = 1888, message = "Year must be no earlier than 1888")
-    @Max(value = 2024, message = "Year must be no later than 2024")
     private int yearCreated;
-
     private Genre genre;
-
-    @Size(max = 5000, message = "Description must be less than or equal to 5000 characters") // Assuming TEXT type in DB can hold up to 5000 chars
     private String description;
-
     private List<String> pictures;
-
-    private List<Long> actorIds;
+    private List<ActorDto> actors;
 
     // Constructors
-    public UpdateMovieDto() {}
+    public MovieDto() {}
 
-    public UpdateMovieDto(String imdbID, String title, int yearCreated, Genre genre, String description, List<String> pictures, List<Long> actorIds) {
+    public MovieDto(String imdbID, String title, int yearCreated, Genre genre, String description, List<String> pictures, List<ActorDto> actors) {
         this.imdbID = imdbID;
         this.title = title;
         this.yearCreated = yearCreated;
         this.genre = genre;
         this.description = description;
         this.pictures = pictures;
-        this.actorIds = actorIds;
+        this.actors = actors;
     }
 
     // Getters and setters
@@ -91,11 +77,11 @@ public class UpdateMovieDto {
         this.pictures = pictures;
     }
 
-    public List<Long> getActorIds() {
-        return actorIds;
+    public List<ActorDto> getActors() {
+        return actors;
     }
 
-    public void setActorIds(List<Long> actorIds) {
-        this.actorIds = actorIds;
+    public void setActors(List<ActorDto> actors) {
+        this.actors = actors;
     }
 }

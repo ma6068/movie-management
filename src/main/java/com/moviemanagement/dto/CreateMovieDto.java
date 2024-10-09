@@ -3,7 +3,6 @@ package com.moviemanagement.dto;
 import com.moviemanagement.enums.Genre;
 import com.moviemanagement.validation.UniqueImdbID;
 import jakarta.validation.constraints.*;
-
 import java.util.List;
 
 public class CreateMovieDto {
@@ -22,25 +21,26 @@ public class CreateMovieDto {
     @Max(value = 2024, message = "Year must be no later than 2024")
     private int yearCreated;
 
-    //@NotNull(message = "Genre cannot be null")
     private Genre genre;
 
     @Size(max = 5000, message = "Description must be less than or equal to 5000 characters") // Assuming TEXT type in DB can hold up to 5000 chars
     private String description;
 
-    @NotEmpty(message = "At least one picture URL must be provided")
-    private List<@NotBlank(message = "Picture URL cannot be blank") @Size(max = 255, message = "Picture URL must be less than or equal to 255 characters") String> pictures;
+    private List<String> pictures;
+
+    private List<Long> actorIds;
 
     // Constructors
     public CreateMovieDto() {}
 
-    public CreateMovieDto(String imdbID, String title, int yearCreated, Genre genre, String description, List<String> pictures) {
+    public CreateMovieDto(String imdbID, String title, int yearCreated, Genre genre, String description, List<String> pictures, List<Long> actorIds) {
         this.imdbID = imdbID;
         this.title = title;
         this.yearCreated = yearCreated;
         this.genre = genre;
         this.description = description;
         this.pictures = pictures;
+        this.actorIds = actorIds;
     }
 
     // Getters and setters
@@ -90,5 +90,13 @@ public class CreateMovieDto {
 
     public void setPictures(List<String> pictures) {
         this.pictures = pictures;
+    }
+
+    public List<Long> getActorIds() {
+        return actorIds;
+    }
+
+    public void setActorIds(List<Long> actorIds) {
+        this.actorIds = actorIds;
     }
 }

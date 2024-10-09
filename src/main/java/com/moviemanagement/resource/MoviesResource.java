@@ -2,9 +2,9 @@ package com.moviemanagement.resource;
 
 import com.moviemanagement.dto.CreateMovieDto;
 import com.moviemanagement.dto.UpdateMovieDto;
-import com.moviemanagement.entity.Movie;
-import com.moviemanagement.repository.MoviesRepository;
+import com.moviemanagement.mapper.MovieMapper;
 import com.moviemanagement.response.BasicResponse;
+import com.moviemanagement.services.MovieService;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -12,7 +12,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.List;
 
 @Path("/movies")
 @Produces(MediaType.APPLICATION_JSON)
@@ -22,7 +21,7 @@ public class MoviesResource {
     private static final Logger logger = LoggerFactory.getLogger(MoviesResource.class);
 
     @Inject
-    MoviesRepository moviesRepository;
+    MovieService movieService;
 
     // List all movies
     @GET
@@ -30,7 +29,7 @@ public class MoviesResource {
     public Response listAll() {
         try {
             logger.info("Fetching all movies");
-            List<Movie> movies = moviesRepository.findAll();
+            var movies = movieService.listAllMovies();
             return Response.ok(movies).build();
         } catch (Exception e) {
             logger.error("Error fetching movies", e);
@@ -46,7 +45,7 @@ public class MoviesResource {
     public Response listMovies(@PathParam("page") int page, @PathParam("size") int size) {
         try {
             logger.info("Fetching movies with pagination page: {}, size: {}", page, size);
-            List<Movie> movies = moviesRepository.findAll(page, size);
+            var movies = movieService.listMoviesWithPagination(page, size);
             return Response.ok(movies).build();
         } catch (Exception e) {
             logger.error("Error fetching paginated movies", e);
@@ -62,7 +61,7 @@ public class MoviesResource {
     public Response search(@QueryParam("title") String title) {
         try {
             logger.info("Searching for movies with title: {}", title);
-            List<Movie> movies = moviesRepository.findByTitle(title);
+            var movies = movieService.searchMoviesByTitle(title);
             return Response.ok(movies).build();
         } catch (Exception e) {
             logger.error("Error searching for movies", e);
@@ -78,9 +77,9 @@ public class MoviesResource {
     public Response create(@Valid CreateMovieDto createMovieDto) {
         try {
             logger.info("Creating a new movie with IMDb ID: {}", createMovieDto.getImdbID());
-            moviesRepository.create(convertToEntity(createMovieDto));
+            var response = movieService.createMovie(createMovieDto);
             return Response.status(Response.Status.CREATED)
-                .entity(new BasicResponse(true, "Movie created successfully"))
+                .entity(new BasicResponse(response.isSuccess(), response.getMessage()))
                 .build();
         } catch (Exception e) {
             logger.error("Error creating movie", e);
@@ -96,16 +95,8 @@ public class MoviesResource {
     public Response update(@Valid UpdateMovieDto updateMovieDto) {
         try {
             logger.info("Updating movie with IMDb ID: {}", updateMovieDto.getImdbID());
-
-            // check if movie exist
-            var movie = moviesRepository.findById(updateMovieDto.getImdbID());
-            if (movie == null) {
-                return Response.ok(new BasicResponse(false,"Movie with that IMDb ID does not exist")).build();
-            }
-
-            // update movie
-            moviesRepository.update(convertToEntity(movie, updateMovieDto));
-            return Response.ok(new BasicResponse(true,"Movie updated successfully")).build();
+            var response = movieService.updateMovie(updateMovieDto);
+            return Response.ok(new BasicResponse(response.isSuccess(), response.getMessage())).build();
         } catch (Exception e) {
             logger.error("Error updating movie", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -120,38 +111,29 @@ public class MoviesResource {
     public Response delete(@PathParam("imdbID") String imdbID) {
         try {
             logger.info("Deleting movie with IMDb ID: {}", imdbID);
-
-            // check if movie exist
-            var movie = moviesRepository.findById(imdbID);
-            if (movie == null) {
-                return Response.ok(new BasicResponse(false,"Movie with that IMDb ID does not exist")).build();
-            }
-
-            // delete movie
-            moviesRepository.delete(imdbID);
-            return Response.ok(new BasicResponse(true,"Movie deleted successfully")).build();
+            var response = movieService.deleteMovie(imdbID);
+            return Response.ok(new BasicResponse(response.isSuccess(), response.getMessage())).build();
         } catch (Exception e) {
             logger.error("Error deleting movie", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity(new BasicResponse(false, e.getMessage()))
+                .build();
+        }
+    }
+
+    // Find an actor by ID
+    @GET
+    @Path("/get/{imdbID}")
+    public Response findById(@PathParam("imdbID") String imdbID) {
+        try {
+            logger.info("Fetching movie with IMDb ID: {}", imdbID);
+            var movie = movieService.findMovieById(imdbID);
+            return Response.ok(movie).build();
+        } catch (Exception e) {
+            logger.error("Error fetching movie", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(new BasicResponse(false, e.getMessage()))
                     .build();
         }
-    }
-
-    private Movie convertToEntity(CreateMovieDto dto) {
-        // Conversion logic from DTO to Entity
-        //List<Actor> actors = actorsRepository.findAllById(dto.getActorIds());
-        return new Movie(dto.getImdbID(), dto.getTitle(), dto.getYearCreated(), dto.getGenre(), dto.getDescription(), dto.getPictures(), null);
-    }
-
-    private Movie convertToEntity(Movie movie, UpdateMovieDto dto) {
-        // Conversion logic from DTO to Entity
-        //List<Actor> actors = actorsRepository.findAllById(dto.getActorIds());
-        movie.setTitle(dto.getTitle());
-        movie.setYearCreated(dto.getYearCreated());
-        movie.setGenre(dto.getGenre());
-        movie.setDescription(dto.getDescription());
-        movie.setPictures(dto.getPictures());
-        return movie;
     }
 }
