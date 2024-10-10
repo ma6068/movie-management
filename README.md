@@ -132,7 +132,7 @@ curl -X POST "http://localhost:8080/movies/update" -H "Content-Type: application
     "title": "Spiderman",
     "yearCreated": 2000,
     "genre": "ACTION",
-    "description": "With Spider-Man's identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear.",
+    "description": "With Spider-Mans identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear.",
     "pictures": [
         "https://via.placeholder.com/150/0000FF/808080?Text=PAKAINFO.com",
         "https://via.placeholder.com/150/FF0000/FFFFFF?Text=yttags.com"
