@@ -15,12 +15,12 @@ public class ActorsRepository {
 
     // List all actors
     public List<Actor> findAll() {
-        return entityManager.createQuery("SELECT a FROM Actor a LEFT JOIN FETCH a.movies", Actor.class).getResultList();
+        return entityManager.createQuery("SELECT a FROM Actor a", Actor.class).getResultList();
     }
 
     // List actors with pagination support
     public List<Actor> findAll(int page, int pageSize) {
-        return entityManager.createQuery("SELECT a FROM Actor a LEFT JOIN FETCH a.movies", Actor.class)
+        return entityManager.createQuery("SELECT a FROM Actor a", Actor.class)
                 .setFirstResult((page - 1) * pageSize)
                 .setMaxResults(pageSize)
                 .getResultList();
@@ -57,7 +57,7 @@ public class ActorsRepository {
         if (ids == null || ids.isEmpty()) {
             return List.of(); // Return an empty list if no IDs are provided
         }
-        return entityManager.createQuery("SELECT a FROM Actor a LEFT JOIN FETCH a.movies WHERE a.id IN :ids", Actor.class)
+        return entityManager.createQuery("SELECT a FROM Actor a WHERE a.id IN :ids", Actor.class)
                 .setParameter("ids", ids)
                 .getResultList();
     }

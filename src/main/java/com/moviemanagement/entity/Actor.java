@@ -28,12 +28,7 @@ public class Actor {
     @Temporal(TemporalType.DATE)
     private Date bornDate;
 
-    @ManyToMany
-    @JoinTable(
-            name = "actor_movie",
-            joinColumns = @JoinColumn(name = "actor_id"),
-            inverseJoinColumns = @JoinColumn(name = "movie_id")
-    )
+    @ManyToMany(mappedBy = "actors")
     private List<Movie> movies;
 
     // Constructors

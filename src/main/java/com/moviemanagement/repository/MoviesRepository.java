@@ -15,12 +15,12 @@ public class MoviesRepository {
 
     // List all movies
     public List<Movie> findAll() {
-        return entityManager.createQuery("SELECT m FROM Movie m LEFT JOIN FETCH m.actors", Movie.class).getResultList();
+        return entityManager.createQuery("SELECT m FROM Movie m", Movie.class).getResultList();
     }
 
     // List movies with pagination support
     public List<Movie> findAll(int page, int pageSize) {
-        return entityManager.createQuery("SELECT m FROM Movie m LEFT JOIN FETCH m.actors", Movie.class)
+        return entityManager.createQuery("SELECT m FROM Movie m", Movie.class)
                 .setFirstResult((page - 1) * pageSize)
                 .setMaxResults(pageSize)
                 .getResultList();
@@ -28,7 +28,7 @@ public class MoviesRepository {
 
     // Search for a movies by title
     public List<Movie> findByTitle(String title) {
-        return entityManager.createQuery("SELECT m FROM Movie m LEFT JOIN FETCH m.actors WHERE LOWER(m.title) LIKE LOWER(CONCAT('%', :title, '%'))", Movie.class)
+        return entityManager.createQuery("SELECT m FROM Movie m WHERE LOWER(m.title) LIKE LOWER(CONCAT('%', :title, '%'))", Movie.class)
             .setParameter("title", title)
             .getResultList();
     }
@@ -64,7 +64,7 @@ public class MoviesRepository {
         if (ids == null || ids.isEmpty()) {
             return List.of(); // Return an empty list if no IDs are provided
         }
-        return entityManager.createQuery("SELECT m FROM Movie m LEFT JOIN FETCH m.actors WHERE m.imdbID IN :ids", Movie.class)
+        return entityManager.createQuery("SELECT m FROM Movie m WHERE m.imdbID IN :ids", Movie.class)
                 .setParameter("ids", ids)
                 .getResultList();
     }
