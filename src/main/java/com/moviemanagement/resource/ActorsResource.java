@@ -73,10 +73,10 @@ public class ActorsResource {
 
     // Update an existing actor
     @PUT
-    @Path("/update/{actorId}")
-    public Response update(@PathParam("actorId") Long actorId, @Valid CreateUpdateActorDto updateActorDto) {
+    @Path("/update")
+    public Response update(@Valid CreateUpdateActorDto updateActorDto) {
         try {
-            logger.info("Updating actor with ID: {}", actorId);
+            logger.info("Updating actor with ID: {}", updateActorDto.getId());
             var response = actorService.updateActor(updateActorDto);
             return Response.ok(new BasicResponse(response.isSuccess(), response.getMessage())).build();
         } catch (Exception e) {

@@ -39,7 +39,7 @@ public class ActorService {
     public BasicResponse updateActor(CreateUpdateActorDto updateActorDto) {
         Actor actor = actorsRepository.findById(updateActorDto.getId());
         if (actor == null) {
-            return new BasicResponse(false, "Movie not found");
+            return new BasicResponse(false, "Actor not found");
         }
         var actorMovies = moviesRepository.findByIds(updateActorDto.getMovieIds());
         ActorMapper.toEntity(actor, updateActorDto, actorMovies);

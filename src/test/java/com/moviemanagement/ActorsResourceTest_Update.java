@@ -44,7 +44,7 @@ public class ActorsResourceTest_Update {
                 .thenReturn(new BasicResponse(true, "Actor updated successfully"));
 
         // Act
-        Response response = actorsResource.update(1L, dto);
+        Response response = actorsResource.update(dto);
 
         // Assert
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -63,7 +63,7 @@ public class ActorsResourceTest_Update {
                 .thenThrow(new RuntimeException("Actor update failed"));
 
         // Act
-        Response response = actorsResource.update(1L, dto);
+        Response response = actorsResource.update(dto);
 
         // Assert
         assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
