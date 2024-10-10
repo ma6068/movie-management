@@ -129,8 +129,8 @@ Request Body:
 Example call:
 curl -X POST "http://localhost:8080/movies/update" -H "Content-Type: application/json" -d '{
     "imdbID": "tt0050083",
-    "title": "Spiderman",
-    "yearCreated": 2000,
+    "title": "Spiderman 2",
+    "yearCreated": 2010,
     "genre": "ACTION",
     "description": "With Spider-Mans identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear.",
     "pictures": [
@@ -199,7 +199,7 @@ Request Body:
     "movieIds": String array
 }
 Example call:
-curl -X POST "http://localhost:8080/movies/create" -H "Content-Type: application/json" -d '{
+curl -X POST "http://localhost:8080/actors/update" -H "Content-Type: application/json" -d '{
     "id": 1,
     "firstName": "Denzel",
     "lastName": "Washington",
