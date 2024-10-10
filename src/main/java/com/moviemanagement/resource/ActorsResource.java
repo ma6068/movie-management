@@ -110,6 +110,11 @@ public class ActorsResource {
         try {
             logger.info("Fetching actor with ID: {}", id);
             var actor = actorService.findActorById(id);
+            if (actor == null) {
+                return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new BasicResponse(true, "Actor not found"))
+                    .build();
+            }
             return Response.ok(actor).build();
         } catch (Exception e) {
             logger.error("Error fetching actor", e);

@@ -127,6 +127,11 @@ public class MoviesResource {
         try {
             logger.info("Fetching movie with IMDb ID: {}", imdbID);
             var movie = movieService.findMovieById(imdbID);
+            if (movie == null) {
+                return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new BasicResponse(true, "Movie not found"))
+                    .build();
+            }
             return Response.ok(movie).build();
         } catch (Exception e) {
             logger.error("Error fetching movie", e);

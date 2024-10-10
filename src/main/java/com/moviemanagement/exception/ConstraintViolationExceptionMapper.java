@@ -1,6 +1,6 @@
 package com.moviemanagement.exception;
 
-import com.moviemanagement.dto.ErrorResponse;
+import com.moviemanagement.response.ErrorResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Response;
